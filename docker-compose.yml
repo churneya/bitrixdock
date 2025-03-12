@@ -21,8 +21,6 @@ services:
         build: ./${WEB_SERVER_TYPE}
         depends_on:
             - source
-            - push-server-sub
-            - push-server-pub
         volumes_from:
             - source
         ports:
@@ -86,6 +84,8 @@ services:
         tty: true
         networks:
             - bitrixdock
+        profiles:
+            - admin
 
     push-server-sub:
         image: ikarpovich/bitrix-push-server
@@ -99,6 +99,8 @@ services:
             - MODE=sub
         depends_on:
             - redis
+        profiles:
+            - push
 
     push-server-pub:
         image: ikarpovich/bitrix-push-server
@@ -112,11 +114,15 @@ services:
             - MODE=pub
         depends_on:
             - redis
+        profiles:
+            - push
 
     redis:
         image: redis
         networks:
             - bitrixdock
+        profiles:
+            - push
 
     source:
         image: alpine:latest
